@@ -1,0 +1,102 @@
+py manage.py shell
+
+from news.models import *
+
+user1 = User.objects.create(username='Ivan', first_name='Ivanov')
+
+user2 = User.objects.create(username='Petr', first_name='Petrov')
+
+Author.objects.create(authorUser=user1)
+
+Author.objects.create(authorUser=user2)
+
+Category.objects.create(name='IT')
+
+Category.objects.create(name='Education')
+
+Category.objects.create(name='Sport')
+
+Category.objects.create(name='Bisness')
+
+Category.objects.create(name='Cinema')
+
+
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='Ivan')), categoryType='NW', title='smth title', text='smth text')
+
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='Ivan')), categoryType='AR', title='smth title', text='smth text')
+
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='Petr')), categoryType='AR', title='wrng title', text='wrng text')
+
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='Petr')), categoryType='AR', title='wrng title', text='wrng text')
+
+p1 = Post.objects.get(pk=1)
+
+p2 = Post.objects.get(pk=2)
+
+p3 = Post.objects.get(pk=3)
+
+p4 = Post.objects.get(pk=4)
+
+c1 = Category.objects.get(name='IT')
+
+c2 = Category.objects.get(name='Education')
+
+c3 = Category.objects.get(name='Sport')
+
+c4 = Category.objects.get(name='Bisness')
+
+c5 = Category.objects.get(name='Cinema')
+
+p1.postCategory.add(c1)
+
+p2.postCategory.add(c2, c3)
+
+p3.postCategory.add(c4)
+
+p4.postCategory.add(c5)
+
+Comment.objects.create(commentUser=User.objects.get(username='Ivan'), commentPost= Post.objects.get(pk=1), text='comment text1')
+
+Comment.objects.create(commentUser=User.objects.get(username='Ivan'), commentPost= Post.objects.get(pk=2), text='comment text2')
+
+Comment.objects.create(commentUser=User.objects.get(username='Ivan'), commentPost= Post.objects.get(pk=3), text='comment text3')
+
+Comment.objects.create(commentUser=User.objects.get(username='Petr'), commentPost= Post.objects.get(pk=1), text='comment text4')
+
+Post.objects.get(pk=1).like()
+
+Post.objects.get(pk=2).like()
+
+Post.objects.get(pk=3).like()
+
+Post.objects.get(pk=3).dislike()
+
+Post.objects.get(pk=3).dislike()
+
+Post.objects.get(pk=1).like()
+
+Comment.objects.get(pk=1).like()
+
+Comment.objects.get(pk=2).like()
+
+Comment.objects.get(pk=3).dislike()
+
+Author.objects.get(authorUser=User.objects.get(username='Ivan')).update_rating()
+
+Author.objects.get(authorUser=User.objects.get(username='Petr')).update_rating()
+
+best_auth = Author.objects.all().order_by('-ratingAuthor').values('authorUser__username', 'ratingAuthor')[0]
+
+print(best_auth)
+
+best_post_inf = Post.objects.all().order_by('-rating').values('author__authorUser__username', 'rating', 'title')[0]
+
+best_post = Post.objects.all().order_by('-rating')[0]
+
+print(best_post_inf, best_post.preview())
+
+all_comm = Comment.objects.all().order_by().values('dateCreation', 'commentUser', 'rating', 'text')
+
+print()
+
+
